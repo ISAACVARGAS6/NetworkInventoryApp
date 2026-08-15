@@ -1,5 +1,7 @@
 # Network Inventory
 <img width="1247" height="887" alt="image" src="https://github.com/user-attachments/assets/1dd13bf4-14bf-45fd-88a5-01295b57f965" />
+<img width="1328" height="888" alt="image" src="https://github.com/user-attachments/assets/a314b40d-1ea0-4a4e-9209-8b6bec98395c" />
+
 
 Network inventory and discovery application built with React and FastAPI.
 
