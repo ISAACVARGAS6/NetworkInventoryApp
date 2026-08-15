@@ -13,48 +13,22 @@ import Inventory from "./pages/Inventory";
 
 import "./App.css";
 
-
 function App() {
     return (
         <BrowserRouter>
-
             <div className="app">
-
                 <Sidebar />
-
                 <main className="main-content">
-
                     <Routes>
-
-                        <Route
-                            path="/"
-                            element={<Dashboard />}
-                        />
-
-                        <Route
-                            path="/scans"
-                            element={<Scans />}
-                        />
-
-                        <Route
-                            path="/devices"
-                            element={<Devices />}
-                        />
-
-                        <Route
-                            path="/inventory"
-                            element={<Inventory />}
-                        />
-
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/scans" element={<Scans />} />
+                        <Route path="/devices" element={<Devices />} />
+                        <Route path="/inventory" element={<Inventory />} />
                     </Routes>
-
                 </main>
-
             </div>
-
         </BrowserRouter>
     );
 }
-
 
 export default App;

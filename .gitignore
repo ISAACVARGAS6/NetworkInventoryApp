@@ -21,7 +21,8 @@ backend/.env
 backend/*.db
 backend/*.sqlite
 backend/*.sqlite3
-
+# OUI database
+backend/oui.txt
 
 # ============================================================
 # NODE / FRONTEND

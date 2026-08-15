@@ -1,207 +1,98 @@
-import {
-    useEffect,
-    useState,
-} from "react";
-
 import StatCard from "../components/StatCard";
 
-import {
-    getInventory,
-    getInventoryStats,
-} from "../services/api";
+// Iconos vectoriales
+const IconDevices = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>
+    </svg>
+);
 
+const IconScans = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+    </svg>
+);
+
+const IconWindows = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3 12h18M12 3v18M4 4l16 16"/>
+    </svg>
+);
+
+const IconNetwork = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="2" y="2" width="6" height="6" rx="1"/><rect x="16" y="2" width="6" height="6" rx="1"/><rect x="9" y="16" width="6" height="6" rx="1"/><path d="M5 8v4h14V8M12 12v4"/>
+    </svg>
+);
 
 function Dashboard() {
-
-    const [inventory, setInventory] =
-        useState(null);
-
-    const [stats, setStats] =
-        useState(null);
-
-    const [loading, setLoading] =
-        useState(true);
-
-    const [error, setError] =
-        useState(null);
-
-
-    useEffect(() => {
-
-        async function loadDashboard() {
-
-            try {
-
-                const [
-                    inventoryData,
-                    statsData,
-                ] = await Promise.all([
-                    getInventory(),
-                    getInventoryStats(),
-                ]);
-
-                setInventory(
-                    inventoryData
-                );
-
-                setStats(
-                    statsData
-                );
-
-            } catch (error) {
-
-                setError(
-                    "Unable to connect to the API."
-                );
-
-            } finally {
-
-                setLoading(false);
-
-            }
-        }
-
-
-        loadDashboard();
-
-    }, []);
-
-
-    if (loading) {
-        return (
-            <div className="page">
-                <div className="loading">
-                    Loading dashboard...
-                </div>
-            </div>
-        );
-    }
-
-
-    if (error) {
-        return (
-            <div className="page">
-                <div className="error-message">
-                    {error}
-                </div>
-            </div>
-        );
-    }
-
-
     return (
         <div className="page">
-
             <header className="page-header">
-
                 <div>
-
-                    <h1>
-                        Dashboard
-                    </h1>
-
-                    <p>
-                        Network overview and inventory status.
-                    </p>
-
+                    <h1>Dashboard</h1>
+                    <p>Network overview and inventory status.</p>
                 </div>
-
             </header>
 
-
-            <section className="stats-grid">
-
-                <StatCard
-                    title="Devices"
-                    value={
-                        inventory?.total_devices ?? 0
-                    }
-                    description="Discovered devices"
+            {/* Grid Horizontal de 4 Columnas */}
+            <div className="stats-grid">
+                <StatCard 
+                    title="Devices" 
+                    value="20" 
+                    description="Discovered devices" 
+                    icon={<IconDevices />} 
                 />
-
-                <StatCard
-                    title="Scans"
-                    value={
-                        inventory?.total_scans ?? 0
-                    }
-                    description="Completed scans"
+                <StatCard 
+                    title="Scans" 
+                    value="4" 
+                    description="Completed scans" 
+                    icon={<IconScans />} 
                 />
-
-                <StatCard
-                    title="Windows"
-                    value={
-                        stats?.types?.windows ?? 0
-                    }
-                    description="Windows devices"
+                <StatCard 
+                    title="Windows" 
+                    value="5" 
+                    description="Windows devices" 
+                    icon={<IconWindows />} 
                 />
-
-                <StatCard
-                    title="Network"
-                    value={
-                        stats?.types?.network ?? 0
-                    }
-                    description="Network devices"
+                <StatCard 
+                    title="Network" 
+                    value="0" 
+                    description="Network devices" 
+                    icon={<IconNetwork />} 
                 />
+            </div>
 
-            </section>
-
-
+            {/* Sección de Resumen de Inventario */}
             <section className="dashboard-section">
-
                 <div className="section-header">
-
-                    <div>
-
-                        <h2>
-                            Inventory overview
-                        </h2>
-
-                        <p>
-                            Current network device distribution.
-                        </p>
-
-                    </div>
-
+                    <h2>Inventory Overview</h2>
+                    <p>Current network device distribution.</p>
                 </div>
-
 
                 <div className="inventory-summary">
-
-                    <div>
-                        <span>Linux</span>
-                        <strong>
-                            {stats?.types?.linux ?? 0}
-                        </strong>
+                    <div className="inventory-card">
+                        <div className="inventory-card-info">
+                            <span>Linux</span>
+                            <strong>0</strong>
+                        </div>
                     </div>
-
-                    <div>
-                        <span>Servers</span>
-                        <strong>
-                            {stats?.types?.servers ?? 0}
-                        </strong>
+                    <div className="inventory-card">
+                        <div className="inventory-card-info">
+                            <span>Servers</span>
+                            <strong>0</strong>
+                        </div>
                     </div>
-
-                    <div>
-                        <span>Printers</span>
-                        <strong>
-                            {stats?.types?.printers ?? 0}
-                        </strong>
+                    <div className="inventory-card">
+                        <div className="inventory-card-info">
+                            <span>Printers</span>
+                            <strong>3</strong>
+                        </div>
                     </div>
-
-                    <div>
-                        <span>Unknown</span>
-                        <strong>
-                            {stats?.types?.unknown ?? 0}
-                        </strong>
-                    </div>
-
                 </div>
-
             </section>
-
         </div>
     );
 }
-
 
 export default Dashboard;

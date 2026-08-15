@@ -158,7 +158,8 @@ class NetworkScanner:
         device["device_type"] = (
             determine_device_type(
                 device["hostname"],
-                ports,
+                ports=ports,
+                manufacturer=device["manufacturer"],
             )
         )
 
