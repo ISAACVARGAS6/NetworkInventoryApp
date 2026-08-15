@@ -1,5 +1,6 @@
 # Network Inventory
-![alt text](image.png)
+<img width="1573" height="894" alt="image" src="https://github.com/user-attachments/assets/5791b1b8-ee24-41e4-ad3c-d133b5beed1e" />
+
 Network inventory and discovery application built with React and FastAPI.
 
 The application scans an authorized IPv4 network, discovers active hosts, identifies basic device information, detects common TCP services, classifies devices, and stores scan results in a SQLite database.
