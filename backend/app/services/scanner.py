@@ -16,6 +16,17 @@ from app.services.ping import ping_host
 from app.services.ports import scan_ports
 
 
+def _is_gateway_candidate(ip: str, network: IPv4Network) -> bool:
+    """Return whether an address is a conventional gateway candidate."""
+    if network.num_addresses <= 2:
+        return False
+
+    return ip in {
+        str(network.network_address + 1),
+        str(network.broadcast_address - 1),
+    }
+
+
 class NetworkScanner:
     """
     Network discovery and inventory scanner.
@@ -59,12 +70,15 @@ class NetworkScanner:
             self.discovery_timeout,
         )
 
-        if not reachable:
+        # A host can block ICMP while still being present on the local network.
+        # The ping attempt populates the ARP cache, so a resolved MAC is a
+        # second, link-layer signal that lets us retain such devices.
+        mac = get_mac_address(ip)
+
+        if not reachable and mac == "Unknown":
             return None
 
         hostname = get_hostname(ip)
-
-        mac = get_mac_address(ip)
 
         manufacturer = get_manufacturer(
             mac,
@@ -147,6 +161,7 @@ class NetworkScanner:
     def analyze_device(
         self,
         device: dict,
+        target_network: IPv4Network | None = None,
     ):
         """Scan ports and classify a device."""
 
@@ -163,6 +178,9 @@ class NetworkScanner:
                 device["hostname"],
                 ports=ports,
                 manufacturer=device["manufacturer"],
+                is_gateway=(target_network is not None and _is_gateway_candidate(
+                    device["ip"], target_network
+                )),
             )
         )
 
@@ -185,6 +203,8 @@ class NetworkScanner:
             network
         )
 
+        target_network = ip_network(network, strict=False)
+
         with ThreadPoolExecutor(
             max_workers=min(self.discovery_workers, max(1, len(devices)))
         ) as executor:
@@ -193,6 +213,7 @@ class NetworkScanner:
                 executor.submit(
                     self.analyze_device,
                     device,
+                    target_network,
                 )
                 for device in devices
             ]

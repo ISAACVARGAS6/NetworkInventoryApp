@@ -202,6 +202,7 @@ def determine_device_type(
     hostname: str,
     ports: list,
     manufacturer: str = "",
+    is_gateway: bool = False,
 ) -> str:
     """
     Classify a network device using multiple signals.
@@ -279,11 +280,17 @@ def determine_device_type(
     ):
         scores["Network Infrastructure"] += 5
 
+    # The usual first/last usable address is not proof on its own, but it is
+    # a strong useful signal when a gateway does not expose a management port
+    # or reply to reverse DNS.
+    if is_gateway:
+        scores["Network Infrastructure"] += 6
+
     if 161 in port_numbers:
-        scores["Network Infrastructure"] += 3
+        scores["Network Infrastructure"] += 4
 
     if 23 in port_numbers:
-        scores["Network Infrastructure"] += 2
+        scores["Network Infrastructure"] += 4
 
     if (
         22 in port_numbers
