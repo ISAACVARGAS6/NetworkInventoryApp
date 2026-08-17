@@ -387,6 +387,121 @@ button, input {
     border-color: rgba(239, 68, 68, 0.2);
 }
 
+.table-card,
+.scan-details,
+.scan-form {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14px;
+}
+
+th,
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+}
+
+th {
+    color: var(--text-secondary);
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.mono {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 12px;
+}
+
+.type-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--bg-subtle);
+    color: var(--text-secondary);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.scan-form {
+    display: flex;
+    align-items: end;
+    gap: 12px;
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+.scan-form label {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.scan-form input {
+    width: 100%;
+    padding: 10px 12px;
+    color: var(--text-primary);
+    background: var(--bg-app);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.scan-form button,
+.secondary-button {
+    padding: 10px 14px;
+    color: #fff;
+    background: var(--primary);
+    border: 0;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.secondary-button {
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+.scan-form button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.scan-details {
+    margin-top: 20px;
+    padding: 22px;
+}
+
+.scan-details ul {
+    margin: 16px 0 0;
+    padding-left: 20px;
+}
+
+.scan-details li + li {
+    margin-top: 8px;
+}
+
 /* ============================================================
    RESPONSIVE DESIGN
    ============================================================ */
@@ -434,5 +549,10 @@ button, input {
 @media (max-width: 640px) {
     .stats-grid {
         grid-template-columns: 1fr;
+    }
+
+    .scan-form {
+        align-items: stretch;
+        flex-direction: column;
     }
 }
