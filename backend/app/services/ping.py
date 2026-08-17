@@ -44,9 +44,10 @@ def ping_host(ip: str, timeout_ms: int = 500):
             encoding="utf-8",
             errors="ignore",
             check=False,
+            timeout=max(2, (timeout_ms / 1000) + 2),
         )
 
-    except OSError:
+    except (OSError, subprocess.TimeoutExpired):
         return False, None
 
     if result.returncode != 0:

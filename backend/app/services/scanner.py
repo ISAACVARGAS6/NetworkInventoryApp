@@ -2,7 +2,7 @@ from concurrent.futures import (
     ThreadPoolExecutor,
     as_completed,
 )
-from ipaddress import ip_network
+from ipaddress import IPv4Network, ip_network
 
 from app.services.arp import get_mac_address
 from app.services.classifier import (
@@ -30,7 +30,7 @@ class NetworkScanner:
         port_workers: int = 30,
     ):
 
-        self.oui = oui or {}
+        self.oui = oui if oui is not None else {}
 
         self.discovery_timeout = (
             discovery_timeout
@@ -98,6 +98,9 @@ class NetworkScanner:
             strict=False,
         )
 
+        if not isinstance(target_network, IPv4Network):
+            raise ValueError("Only IPv4 CIDR networks are supported")
+
         hosts = [
             str(ip)
             for ip in target_network.hosts()
@@ -106,7 +109,7 @@ class NetworkScanner:
         devices = []
 
         with ThreadPoolExecutor(
-            max_workers=self.discovery_workers
+            max_workers=min(self.discovery_workers, max(1, len(hosts)))
         ) as executor:
 
             futures = {
@@ -183,7 +186,7 @@ class NetworkScanner:
         )
 
         with ThreadPoolExecutor(
-            max_workers=self.discovery_workers
+            max_workers=min(self.discovery_workers, max(1, len(devices)))
         ) as executor:
 
             futures = [

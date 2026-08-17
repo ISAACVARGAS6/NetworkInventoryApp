@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from app.api.routes_scan import router as scan_router
 from app.api.routes_devices import router as devices_router
@@ -7,6 +8,7 @@ from app.api.routes_inventory import router as inventory_router
 
 from app.core.database import Base
 from app.core.database import engine
+from app.core.database import SessionLocal
 
 import app.models
 
@@ -91,8 +93,18 @@ def root():
 
 @app.get("/health")
 def health_check():
-    """Check whether the API is running."""
+    """Check that the API and its persistence layer are available."""
+
+    try:
+        with SessionLocal() as db:
+            db.execute(text("SELECT 1"))
+    except Exception:
+        return {
+            "status": "unhealthy",
+            "database": "unavailable",
+        }
 
     return {
         "status": "healthy",
+        "database": "available",
     }

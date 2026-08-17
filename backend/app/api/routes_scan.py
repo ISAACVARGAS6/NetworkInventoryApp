@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from ipaddress import IPv4Network, ip_network
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -10,6 +11,7 @@ from app.core.database import get_db
 from app.models.device import Device
 from app.models.port import Port
 from app.models.scan import Scan
+from app.services.oui import load_oui
 from app.services.scanner import NetworkScanner
 
 
@@ -57,6 +59,54 @@ class ScanRequest(BaseModel):
     )
 
 
+def _validate_scan_target(network: str) -> str:
+    """Validate the requested target and ensure it is operator-authorized."""
+    try:
+        target = ip_network(network, strict=False)
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=f"Invalid network: {error}") from error
+
+    if not isinstance(target, IPv4Network):
+        raise HTTPException(status_code=400, detail="Only IPv4 CIDR networks are supported.")
+
+    host_count = target.num_addresses if target.prefixlen >= 31 else target.num_addresses - 2
+    if host_count > settings.max_hosts_per_scan:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Network contains more than {settings.max_hosts_per_scan} hosts; "
+                "split it into smaller scans."
+            ),
+        )
+
+    configured_networks = settings.authorized_networks or settings.network
+    allowed_networks = [
+        ip_network(item.strip(), strict=False)
+        for item in configured_networks.split(",")
+    ]
+    if not any(target.subnet_of(allowed) for allowed in allowed_networks):
+        raise HTTPException(status_code=403, detail="Target network is not authorized.")
+
+    return str(target)
+
+
+def _serialize_device(device: Device) -> dict:
+    return {
+        "id": device.id,
+        "scan_id": device.scan_id,
+        "ip": device.ip,
+        "hostname": device.hostname,
+        "mac": device.mac,
+        "manufacturer": device.manufacturer,
+        "ping_ms": device.ping_ms,
+        "device_type": device.device_type,
+        "ports": [
+            {"port": port.port, "service": port.service}
+            for port in sorted(device.ports, key=lambda item: item.port)
+        ],
+    }
+
+
 # ============================================================
 # START SCAN
 # ============================================================
@@ -70,7 +120,7 @@ def start_scan(
     Execute a network scan and persist the results.
     """
 
-    network = (
+    network = _validate_scan_target(
         request.network
         or settings.network
     )
@@ -102,6 +152,7 @@ def start_scan(
     started_at = datetime.now(timezone.utc)
 
     scanner = NetworkScanner(
+        oui=load_oui(settings.oui_file),
         discovery_timeout=discovery_timeout,
         port_timeout=port_timeout,
         discovery_workers=discovery_workers,
@@ -114,12 +165,6 @@ def start_scan(
 
     try:
         devices = scanner.scan(network)
-
-    except ValueError as error:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid network: {error}",
-        )
 
     except Exception as error:
         raise HTTPException(
@@ -268,4 +313,5 @@ def get_scan(
         "started_at": scan.started_at,
         "finished_at": scan.finished_at,
         "hosts_found": scan.hosts_found,
+        "devices": [_serialize_device(device) for device in scan.devices],
     }
