@@ -27,9 +27,6 @@ The project was built to combine **network discovery, backend API development, d
 * CORS configuration for frontend/backend communication
 * Environment-based configuration
 
-## Screenshots
-
-> Screenshots can be added here as the project UI evolves.
 
 ## Architecture
 
