@@ -2,7 +2,6 @@
 
 <img width="1172" height="894" alt="image" src="https://github.com/user-attachments/assets/f002798e-b8ef-4508-b0c2-c28462295dab" />
 <img width="1160" height="886" alt="image" src="https://github.com/user-attachments/assets/d7bdaa61-a94b-46c5-9bb7-24283c986699" />
-<img width="1153" height="888" alt="image" src="https://github.com/user-attachments/assets/5ee7666a-cbf8-4625-9665-57cd5d63487d" />
 <img width="1157" height="895" alt="image" src="https://github.com/user-attachments/assets/ac6b0d45-98a9-4a55-8454-6544cac5e6d2" />
 
 Full-stack network inventory and discovery application built with **React and FastAPI**.
