@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from ipaddress import IPv4Network, ip_network
+from ipaddress import IPv4Network, ip_address, ip_network
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -313,5 +313,8 @@ def get_scan(
         "started_at": scan.started_at,
         "finished_at": scan.finished_at,
         "hosts_found": scan.hosts_found,
-        "devices": [_serialize_device(device) for device in scan.devices],
+        "devices": [
+            _serialize_device(device)
+            for device in sorted(scan.devices, key=lambda item: ip_address(item.ip))
+        ],
     }

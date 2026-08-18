@@ -203,7 +203,55 @@ Activate it on Windows:
 
 ```bash
 .venv\Scripts\activate
+
+Install the dependencies:
+
+pip install -r requirements.txt
+
+Create a .env file based on .env.example.
+
+Example:
+
+NETWORK=192.168.1.0/24
+DISCOVERY_TIMEOUT=500
+PORT_TIMEOUT=0.25
+DISCOVERY_WORKERS=50
+PORT_WORKERS=30
+
+Start the API:
+
+uvicorn app.main:app --reload
+
+The API will be available at:
+
+http://127.0.0.1:8000
+
+Interactive API documentation:
+
+http://127.0.0.1:8000/docs
+
+## Testing
+
+The backend test suite uses the Python standard library and replaces network
+operations with mocks, so it never probes a real network. From `backend/` run:
+
+```bash
+.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
+
+The frontend quality checks can be run from `frontend/`:
+
+```bash
+npm run lint
+npm run build
+```
+
+Frontend Setup
+
+Open another terminal and navigate to the frontend:
+
+cd frontend
+
 
 Install dependencies:
 

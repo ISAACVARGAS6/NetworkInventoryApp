@@ -61,7 +61,14 @@ def normalize_mac(mac: str):
 
     parts = normalized.split(":")
 
-    if len(parts) != 6:
+    if (
+        len(parts) != 6
+        or any(
+            len(part) != 2
+            or any(char not in "0123456789ABCDEF" for char in part)
+            for part in parts
+        )
+    ):
         return None
 
     return ":".join(parts)

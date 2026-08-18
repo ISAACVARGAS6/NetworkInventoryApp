@@ -1,4 +1,5 @@
 from typing import Optional
+from ipaddress import ip_address
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -23,10 +24,12 @@ def get_devices(
 ):
     """Return all discovered devices."""
 
-    devices = (
-        db.query(Device)
-        .order_by(Device.ip)
-        .all()
+    # IP addresses are stored as strings, so a database lexical sort would
+    # place 192.168.1.100 before 192.168.1.2.  Sort their parsed values for
+    # the order users expect in the inventory.
+    devices = sorted(
+        db.query(Device).all(),
+        key=lambda device: ip_address(device.ip),
     )
 
     return [
@@ -44,7 +47,7 @@ def get_devices(
                     "port": port.port,
                     "service": port.service,
                 }
-                for port in device.ports
+                for port in sorted(device.ports, key=lambda item: item.port)
             ],
         }
         for device in devices
@@ -88,6 +91,6 @@ def get_device(
                 "port": port.port,
                 "service": port.service,
             }
-            for port in device.ports
+            for port in sorted(device.ports, key=lambda item: item.port)
         ],
     }
