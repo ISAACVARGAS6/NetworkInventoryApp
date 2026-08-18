@@ -1,6 +1,6 @@
 # NetworkInventoryApp
 
-<img width="1172" height="894" alt="image" src="https://github.com/user-attachments/assets/f002798e-b8ef-4508-b0c2-c28462295dab" />
+<img width="1176" height="892" alt="image" src="https://github.com/user-attachments/assets/74d3efc4-1ffd-4aa1-a4a7-c262defdfaba" />
 <img width="1160" height="886" alt="image" src="https://github.com/user-attachments/assets/d7bdaa61-a94b-46c5-9bb7-24283c986699" />
 <img width="1157" height="895" alt="image" src="https://github.com/user-attachments/assets/ac6b0d45-98a9-4a55-8454-6544cac5e6d2" />
 
